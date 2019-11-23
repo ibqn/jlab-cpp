@@ -4,6 +4,7 @@ FROM jupyter/minimal-notebook
 # Activate the 'root' user
 USER root
 
+# Install libgl1-mesa-glx to disable libGL.so.1 load warning
 RUN apt-get update && \
     apt-get install -yq --no-install-recommends pkg-config libgl1-mesa-glx gnupg software-properties-common && \
     wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | sudo apt-key add - && \
@@ -36,7 +37,8 @@ RUN apt-get install -y --fix-missing \
     zip \
     && apt-get clean && rm -rf /tmp/* /var/tmp/*
 
-RUN pip install --upgrade numpy && \
+RUN pip install --upgrade pip setuptools && \
+    pip install --upgrade numpy dlib matplotlib && \
     fix-permissions $CONDA_DIR && \
     fix-permissions /home/$NB_USER
 
